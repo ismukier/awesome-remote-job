@@ -328,3 +328,113 @@ Este documento será útil solo si termina en:
 - evidencia auditable en clínica, dato y negocio.
 
 Sin esto, seguirá siendo una estrategia “bonita” sin valor operativo.
+
+---
+
+## 7) Definiciones matemáticas de KPI (para evitar ambigüedad)
+
+## 7.1 Fórmulas canónicas
+
+1. **Adherencia semanal (%)**
+   `adherencia = (tareas_completadas / tareas_planificadas) * 100`
+
+2. **Retención semana 12 (%)**
+   `retencion_w12 = (pacientes_activos_semana_12 / pacientes_iniciados_cohorte) * 100`
+
+3. **Falsos positivos de alerta (%)**
+   `fp_alertas = (alertas_sin_accion_clinica / alertas_totales) * 100`
+
+4. **SLA escalado N2 (%)**
+   `sla_n2 = (alertas_n2_contactadas_<24h / alertas_n2_totales) * 100`
+
+5. **Margen bruto por paciente activo (%)**
+   `margen_bruto = ((ingreso_paciente - coste_directo_paciente) / ingreso_paciente) * 100`
+
+6. **LTV/CAC**
+   `ltv = arpu_mensual * margen_bruto_% * vida_media_meses`
+   `ratio_ltv_cac = ltv / cac`
+
+## 7.2 Reglas de cómputo
+- Toda métrica debe tener timestamp de corte (`as_of_date`) y versión de cálculo (`metric_version`).
+- Todo KPI operativo debe poder recalcularse desde datos crudos.
+- Cambios de definición deben registrarse en changelog y aplicarse desde una fecha efectiva.
+
+---
+
+## 8) Supuestos financieros mínimos y sensibilidad (escenario base)
+
+> Importante: cifras orientativas para modelado inicial. Ajustar con tus costes reales de operación y estructura salarial.
+
+## 8.1 Escenario base de cohorte (12 semanas)
+- Cohorte inicial: **100 pacientes**.
+- Precio programa medio: **EUR 120–220/mes equivalente**.
+- Coste clínico directo mensual por paciente: **EUR 45–90**.
+- Coste tecnológico + soporte mensual por paciente: **EUR 15–35**.
+- Coste total directo mensual estimado: **EUR 60–125**.
+
+## 8.2 Umbrales de sostenibilidad
+- Si precio medio < coste total directo + 25% margen de seguridad: modelo no sostenible.
+- Si retención <45% en semana 12: pausar crecimiento y corregir propuesta de valor.
+- Si LTV/CAC <1.8 durante 2 meses: recortar canales de adquisición no rentables.
+
+## 8.3 Prueba de estrés (obligatoria mensual)
+Ejecutar 3 escenarios:
+1. **Optimista**: +20% retención, -10% coste clínico.
+2. **Base**: supuestos actuales.
+3. **Adverso**: -20% retención, +15% coste clínico, +10% CAC.
+
+Decisión: mantener, ajustar pricing, o reducir alcance clínico-operativo.
+
+---
+
+## 9) Plan de validación empírica por fases (con evidencia trazable)
+
+## 9.1 Fase de factibilidad (0–3 meses)
+- Validar flujo onboarding -> plan -> adherencia -> revisión clínica.
+- Salida mínima: >70% onboarding completo, >60% adherencia media semana 4.
+
+## 9.2 Fase de efectividad operativa (4–9 meses)
+- Comparar cohorte activa vs cohorte histórica interna.
+- Ajustar por edad, sexo, baseline de riesgo y adherencia.
+- Salida mínima: mejora estadística en al menos 1 outcome primario predefinido.
+
+## 9.3 Fase de robustez (9–18 meses)
+- Diseños prospectivos pragmáticos por subpoblaciones.
+- Auditoría externa de metodología y reproducibilidad.
+- Salida mínima: consistencia de resultados en 2 cohortes independientes.
+
+## 9.4 Criterios anti-sesgo
+- Registrar abandonos como desenlace relevante, no excluirlos del análisis central.
+- Separar análisis de eficacia clínica y satisfacción percibida.
+- No modificar outcome primario después de ver resultados (evitar p-hacking operativo).
+
+---
+
+## 10) Registro de decisiones críticas (template operativo)
+
+Usar una tabla de control con estos campos:
+- `decision_id`
+- `fecha`
+- `owner`
+- `hipotesis`
+- `kpi_impactados`
+- `riesgo_asociado`
+- `evidencia`
+- `resultado_esperado`
+- `fecha_revision`
+- `estado` (abierta/cerrada/revertida)
+
+Regla: ninguna decisión de producto clínico entra en producción sin `owner`, `evidencia` y `fecha_revision`.
+
+---
+
+## 11) Qué haría mañana a las 08:00 (ejecución extrema, realista)
+
+1. Congelar ICP y outcomes primarios en 1 página firmada por liderazgo clínico y producto.
+2. Asignar responsables únicos por cada épica (sin ownership compartido ambiguo).
+3. Activar dashboard mínimo con 5 KPI diarios: adherencia, SLA N2, falsos positivos, latencia p95, incidentes.
+4. Ejecutar revisión legal de claims comerciales y textos del asistente IA.
+5. Abrir piloto de 20 pacientes controlados antes de llegar a 100.
+6. Programar comité semanal fijo (60 min, agenda cerrada, decisiones registradas).
+
+Resultado esperado en 30 días: claridad operativa, menos ruido, y primera señal objetiva de tracción o necesidad de pivot.
